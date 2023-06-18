@@ -9,11 +9,41 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.1.4",
+    "@celo/identity": "^4.1.0",
+    "@masa-finance/masa-sdk": "^3.4.10",
+    "antd": "^5.6.1",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
+    "blind-threshold-bls": "https://github.com/celo-org/blind-threshold-bls-wasm#3d1013af",
+    "debug": "^4.3.4",
+    "ethers": "5.6.9",
     "next": "13.4.5",
+    "next-auth": "^4.22.1",
     "postcss": "8.4.24",
+    "qrcode.react": "^3.1.0",
     "react": "18.2.0",
+    "react-cookie": "^4.1.1",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.3.2"
+    "react-hot-toast": "^2.4.1",
+    "react-spinners": "^0.13.8",
+    "supports-color": "8.1.1",
+    "tailwindcss": "3.3.2",
+    "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "@types/node": "20.3.1",
+    "@types/react": "18.2.12"
+  },
+  "overrides": {
+    "cacheable-request": {
+      "keyv": "npm:@keyvhq/core@~1.6.6"
+    }
+  },
+  "browser": {
+    "@celo/poprf": false,
+    "source-map-support": false,
+    "net": false
   }
 }
