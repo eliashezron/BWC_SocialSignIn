@@ -1,13 +1,11 @@
 "use client"
 import React, { useEffect } from "react"
 import {
-  BulbOutlined,
   LeftCircleOutlined,
   ExclamationCircleOutlined,
   LoadingOutlined,
 } from "@ant-design/icons"
 import { Button, Input, Divider } from "antd"
-// import { useNavigate } from "react-router-dom"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { ethers, Wallet } from "ethers"
@@ -22,13 +20,11 @@ function SignInWithMasa() {
   const { selectedChain } = useWalletContext()
   const [seedPhrase, setSeedPhrase] = useState("")
   const [loading, setLoading] = useState(false)
-  // const navigate = useNavigate()
+
   const router = useRouter()
   const chain = CHAINS_CONFIG[selectedChain]
   useEffect(() => {
     let seedPhrase = localStorage.getItem("seedPhrase")
-    // console.log("this is JSON.Parse", JSON.parse(seedPhrase))
-    // console.log("this is seed phrase", seedPhrase)
     setSeedPhrase(JSON.parse(seedPhrase))
   }, [])
 

@@ -5,7 +5,6 @@ import { Divider, Tooltip, Spin, Input, Button } from "antd"
 import { LeftCircleOutlined, LoadingOutlined } from "@ant-design/icons"
 import {
   ALFAJORES_CUSD_ADDRESS,
-  ALFAJORES_RPC,
   FA_CONTRACT,
   FA_PROXY_ADDRESS,
   ODIS_PAYMENTS_CONTRACT,
@@ -18,7 +17,6 @@ import { OdisUtils } from "@celo/identity"
 import PageHeader from "@/components/PageHeader"
 import {
   AuthenticationMethod,
-  AuthSigner,
   OdisContextName,
 } from "@celo/identity/lib/odis/query"
 import { ethers, Wallet } from "ethers"
@@ -29,16 +27,14 @@ import { useWalletContext } from "../Context"
 import { IdentifierPrefix } from "@celo/identity/lib/odis/identifier"
 
 function Transfer() {
-  // const navigate = useNavigate()
   const router = useRouter()
-  const { selectedChain } = useWalletContext()
-  // const [balance, setBalance] = useState(0)
+
   const [amountToSend, setAmountToSend] = useState(null)
   const [sendToAddress, setSendToAddress] = useState(null)
   const [processing, setProcessing] = useState(false)
   const [hash, setHash] = useState(null)
   const [loading, setLoading] = useState(false)
-
+  // eslint-disable-next-line no-unused-vars
   const [wallet, setWallet] = useState("")
   const [seedPhrase, setSeedPhrase] = useState("")
   const [sc, setSc] = useState({})
@@ -201,7 +197,10 @@ function Transfer() {
     <div className='App'>
       <PageHeader />
       <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button onClick={() => router.back()} style={{ marginRight: "60px" }}>
+        <Button
+          onClick={() => router.push("/yourwallet")}
+          style={{ marginRight: "60px" }}
+        >
           <LeftCircleOutlined />
           Back
         </Button>

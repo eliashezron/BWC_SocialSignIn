@@ -35,7 +35,10 @@ const Receive = () => {
     <div className='App'>
       <PageHeader />
       <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button onClick={() => router.back()} style={{ marginRight: "60px" }}>
+        <Button
+          onClick={() => router.push("/yourwallet")}
+          style={{ marginRight: "60px" }}
+        >
           <LeftCircleOutlined />
           Back
         </Button>
