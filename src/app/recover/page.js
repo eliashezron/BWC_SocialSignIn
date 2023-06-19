@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { BulbOutlined } from "@ant-design/icons"
+import { BulbOutlined, LoadingOutlined } from "@ant-design/icons"
 import { Button, Input } from "antd"
 // import { useNavigate } from "react-router-dom"
 import { useRouter } from "next/navigation"
@@ -18,6 +18,7 @@ function RecoverAccount() {
   const router = useRouter()
   const [typedSeed, setTypedSeed] = useState("")
   const [nonValid, setNonValid] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   function seedAdjust(e) {
     setNonValid(false)
@@ -25,6 +26,7 @@ function RecoverAccount() {
   }
 
   function recoverWallet() {
+    setLoading(true)
     let recoveredWallet
     try {
       recoveredWallet = Wallet.fromMnemonic(typedSeed)
@@ -37,6 +39,7 @@ function RecoverAccount() {
     setWallet(recoveredWallet.address)
     localStorage.setItem("seedPhrase", JSON.stringify(typedSeed))
     localStorage.setItem("wallet", Wallet.fromMnemonic(typedSeed).address)
+    setLoading(false)
     router.push("/socialSignIn")
     return
   }
@@ -72,6 +75,7 @@ function RecoverAccount() {
           style={{ backgroundColor: "#1A0329", color: "white" }}
         >
           Recover Wallet
+          {loading && <LoadingOutlined style={{ color: "white" }} />}
         </Button>
         {nonValid && <p style={{ color: "red" }}> Invalid Seed Phrase</p>}
         <p className='frontPageBottom' onClick={() => router.back()}>

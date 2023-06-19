@@ -1,19 +1,18 @@
 "use client"
 import React from "react"
 import { Button, Card } from "antd"
-import { ExclamationCircleOutlined } from "@ant-design/icons"
+import { ExclamationCircleOutlined, LoadingOutlined } from "@ant-design/icons"
 // import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { ethers, Wallet } from "ethers"
 import { useRouter } from "next/navigation"
 import Header from "../../components/PageHeader"
 import { useWalletContext } from "../Context"
-// import { useCookies } from 'react-cookie';
+
 function CreateAccount() {
   const { seedPhrase, setSeedPhrase, setWallet } = useWalletContext()
-  // const [cookies, setCookie, removeCookie] = useCookies(['user']);
+  const [loading, setLoading] = useState(false)
 
-  // const navigate = useNavigate()
   const router = useRouter()
 
   function generateWallet() {
@@ -22,10 +21,12 @@ function CreateAccount() {
   }
 
   function setWalletAndMnemonic() {
+    setLoading(true)
     setSeedPhrase(seedPhrase)
     setWallet(Wallet.fromMnemonic(seedPhrase).address)
     localStorage.setItem("seedPhrase", JSON.stringify(seedPhrase))
     localStorage.setItem("wallet", Wallet.fromMnemonic(seedPhrase).address)
+    setLoading(false)
 
     router.push("/socialSignIn")
   }
@@ -48,6 +49,7 @@ function CreateAccount() {
           style={{ backgroundColor: "#1A0329", color: "white" }}
         >
           Generate Seed Phrase
+          {loading && <LoadingOutlined style={{ color: "white" }} />}
         </Button>
         <Card className='seedPhraseContainer'>
           {seedPhrase && (

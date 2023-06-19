@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Divider, Tooltip, Spin, Input, Button } from "antd"
-import { LeftCircleOutlined } from "@ant-design/icons"
+import { LeftCircleOutlined, LoadingOutlined } from "@ant-design/icons"
 import {
   ALFAJORES_CUSD_ADDRESS,
   ALFAJORES_RPC,
@@ -37,6 +37,7 @@ function Transfer() {
   const [sendToAddress, setSendToAddress] = useState(null)
   const [processing, setProcessing] = useState(false)
   const [hash, setHash] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const [wallet, setWallet] = useState("")
   const [seedPhrase, setSeedPhrase] = useState("")
@@ -133,6 +134,7 @@ function Transfer() {
     return obfuscatedIdentifier
   }
   async function lookupAddress(identifier) {
+    setLoading(true)
     try {
       let obfuscatedIdentifier = getObfuscatedIdentifier(identifier)
       let attestations =
@@ -141,9 +143,11 @@ function Transfer() {
           ["0xdE620bce4c8a96A6268E5e3276eeE085Ccd62Cf7"]
         )
       let [latestAddress] = attestations.accounts
+      setLoading(false)
       toast.success("Address found")
       setAddressToSend(latestAddress)
     } catch (error) {
+      setLoading(false)
       toast.error(error.message)
     }
   }
@@ -227,6 +231,7 @@ function Transfer() {
           onClick={lookupAddressTwitterHandle}
         >
           Search
+          {loading && <LoadingOutlined style={{ color: "white" }} />}
         </Button>
       </div>
       <div className='sendRow'>
@@ -250,7 +255,7 @@ function Transfer() {
           width: "100%",
           marginTop: "20px",
           marginBottom: "20px",
-          backgroundColor: "#12655F",
+          backgroundColor: "#1A0329",
           color: "white",
         }}
         type='primary'

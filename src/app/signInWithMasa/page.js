@@ -4,6 +4,7 @@ import {
   BulbOutlined,
   LeftCircleOutlined,
   ExclamationCircleOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons"
 import { Button, Input, Divider } from "antd"
 // import { useNavigate } from "react-router-dom"
@@ -20,6 +21,7 @@ function SignInWithMasa() {
   const [phoneNumber, setPhoneNumber] = useState("")
   const { selectedChain } = useWalletContext()
   const [seedPhrase, setSeedPhrase] = useState("")
+  const [loading, setLoading] = useState(false)
   // const navigate = useNavigate()
   const router = useRouter()
   const chain = CHAINS_CONFIG[selectedChain]
@@ -31,6 +33,7 @@ function SignInWithMasa() {
   }, [])
 
   async function sendotp() {
+    setLoading(true)
     const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl)
     console.log(chain.rpcUrl)
     console.log(provider)
@@ -65,11 +68,13 @@ function SignInWithMasa() {
       const xy = await masa.green.generate(phone)
       if (xy.success) {
         localStorage.setItem("contact", phone)
+        setLoading(false)
         toast.success("OTP sent to your phone number")
         console.log(xy)
         router.push("/otp")
       }
     } catch (error) {
+      setLoading(false)
       toast.error(error.message)
       console.log(error)
     }
@@ -133,6 +138,7 @@ function SignInWithMasa() {
           style={{ backgroundColor: "#1A0329", color: "white" }}
         >
           SEND OTP
+          {loading && <LoadingOutlined style={{ color: "white" }} />}
         </Button>
       </div>
     </div>

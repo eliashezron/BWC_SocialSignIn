@@ -7,7 +7,7 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons"
 import { Button, Divider } from "antd"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 import {
   ALFAJORES_CUSD_ADDRESS,
   ALFAJORES_RPC,

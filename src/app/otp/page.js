@@ -5,6 +5,7 @@ import {
   BulbOutlined,
   LeftCircleOutlined,
   ExclamationCircleOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons"
 import { Button, Input, Divider } from "antd"
 // import { useNavigate } from "react-router-dom"
@@ -23,6 +24,7 @@ function EnterCode() {
   const chain = CHAINS_CONFIG[selectedChain]
   const [seedPhrase, setSeedPhrase] = useState("")
   const [contact, setContact] = useState("")
+  const [loading, setLoading] = useState(false)
 
   // const navigate = useNavigate()
   const router = useRouter()
@@ -37,6 +39,7 @@ function EnterCode() {
   }, [])
 
   async function sendotp() {
+    setLoading(true)
     const provider = new ethers.providers.JsonRpcProvider(chain.rpcUrl)
     console.log(chain.rpcUrl)
     console.log(provider)
@@ -61,6 +64,7 @@ function EnterCode() {
       console.log(verifyGreenResult)
 
       if (verifyGreenResult.success) {
+        setLoading(false)
         toast.success("OTP verified successfully!")
         // console.log(`Minting Green on '${masa.config.networkName}'`)
 
@@ -82,6 +86,7 @@ function EnterCode() {
         // navigate("/yourWallet")
       }
     } catch (error) {
+      setLoading(false)
       console.log(error.message)
       toast.error(error.message)
     }
@@ -138,6 +143,7 @@ function EnterCode() {
           style={{ backgroundColor: "#1A0329", color: "white" }}
         >
           Access your Wallet
+          {loading && <LoadingOutlined style={{ color: "white" }} />}
         </Button>
       </div>
     </div>

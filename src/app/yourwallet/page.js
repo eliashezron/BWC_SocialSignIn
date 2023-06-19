@@ -7,6 +7,7 @@ import {
   DoubleLeftOutlined,
   CopyOutlined,
   SettingOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons"
 // import { useNavigate } from "react-router-dom"
 import { useRouter } from "next/navigation"
@@ -26,7 +27,7 @@ import {
 } from "../../utils/constants"
 import { OdisUtils } from "@celo/identity"
 import PageHeader from "@/components/PageHeader"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import {
   AuthenticationMethod,
   AuthSigner,
@@ -94,7 +95,8 @@ function WalletView() {
   const { data: session, status } = useSession()
   // console.log("session", session)
   let [socialIdentifier, setSocialIdentifier] = useState("")
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [loading2, setLoading2] = useState(false)
   const [lookupValue, setLookupValue] = useState("")
   const [lookupResult, setLookupResult] = useState([])
   const [sc, setSc] = useState({})
@@ -253,13 +255,6 @@ function WalletView() {
     },
   ]
 
-  function logout() {
-    setSeedPhrase(null)
-    setWallet(null)
-    setBalance(0)
-    router.push("/")
-  }
-
   useEffect(() => {
     if (!wallet) return
     const provider = new ethers.providers.JsonRpcProvider(
@@ -335,9 +330,10 @@ function WalletView() {
     localStorage.removeItem("seedPhrase")
     localStorage.removeItem("wallet")
     if (registered) {
+      localStorage.removeItem("username")
       deregisterIdentifier(session.username.toLowerCase())
     }
-    toast.success("Logged out")
+    toast.success("Logging out")
     router.push("/")
   }
 
@@ -413,6 +409,7 @@ function WalletView() {
   }
 
   async function registerAttestation(identifier, account) {
+    setLoading(true)
     console.log("registerAttestation", identifier, account)
     // check and top up ODIS quota
     await checkAndTopUpODISQuota()
@@ -425,6 +422,7 @@ function WalletView() {
         nowTimestamp
       )
     x && setRegistered(true)
+    setLoading(false)
     toast.success(
       "Address registered. you can now receive funds using your twitter handle."
     )
@@ -442,6 +440,7 @@ function WalletView() {
   }
 
   async function deregisterIdentifier(identifier) {
+    setLoading2(true)
     try {
       let obfuscatedIdentifier = getObfuscatedIdentifier(identifier)
       await sc.federatedAttestationsContract.revokeAttestation(
@@ -451,18 +450,23 @@ function WalletView() {
       )
       setRegistered(false)
       toast.success("Address unlinked from Twitter handle.")
-    } catch (error) {}
+      setLoading2(false)
+    } catch (error) {
+      setLoading2(false)
+      toast.error("Something went wrong")
+    }
   }
 
   useEffect(() => {
-    if (session) {
-      async function lookUp() {
-        const lookup = await lookupAddress(session.username.toLowerCase())
-        lookup && setRegistered(true)
-      }
-      lookUp()
+    if (!session) return
+    let user = localStorage.getItem("username")
+    if (!user) return
+    async function lookUp() {
+      const lookup = await lookupAddress(user)
+      lookup && setRegistered(true)
     }
-  }, [registered])
+    lookUp()
+  }, [session])
 
   useEffect(() => {
     async function fetchData() {
@@ -503,6 +507,7 @@ function WalletView() {
 
   async function linkAccount() {
     console.log("registerAttestation")
+    localStorage.setItem("username", session.username.toLowerCase())
     console.log(session.username.toLowerCase())
     console.log(wallet.toString())
     await registerAttestation(session.username.toLowerCase(), wallet.toString())
@@ -511,6 +516,7 @@ function WalletView() {
     console.log("unLinkingAttestation")
     console.log(session.username.toLowerCase())
     console.log(wallet.toString())
+    localStorage.removeItem("username")
     await deregisterIdentifier(session.username.toLowerCase())
   }
   if (!isMounted) return null
@@ -570,9 +576,13 @@ function WalletView() {
         </div>
         <div>
           {registered ? (
-            <Button onClick={unlinkAccount}>UNLinK Account</Button>
+            <Button onClick={unlinkAccount}>
+              UNLinK Account{loading2 && <LoadingOutlined />}
+            </Button>
           ) : (
-            <Button onClick={linkAccount}>LinK Account</Button>
+            <Button onClick={linkAccount}>
+              LinK Account{loading && <LoadingOutlined />}
+            </Button>
           )}
         </div>
 
